@@ -8,6 +8,17 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
+    private GLSurfaceView mGLView;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mGLView = new OpenglView(this);
+        setContentView(mGLView);
+    }
+
+    /*
     private OpenGLView openGLView;
 
     @Override
@@ -28,4 +39,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         openGLView.onPause();
     }
+
+     */
 }
