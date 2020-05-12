@@ -36,7 +36,6 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // viewport의 width와 height를 지정합니다.
         GLES20.glViewport(0, 0, width, height);
     }
-
 }
 
 /*
