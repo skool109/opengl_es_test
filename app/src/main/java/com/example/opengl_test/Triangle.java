@@ -8,12 +8,24 @@ import java.nio.FloatBuffer;
 
 public class Triangle {
 
+
     private final String vertexShaderCode =
             "#version 300 es                            \n" +
                     "layout (location = 0) in vec4 vPosition;   \n" +
                     "void main() {                              \n" +
                     "   gl_Position = vPosition;                \n" +
                     "}                                          \n";
+        /*
+        private final String vertexShaderCode =
+            "#version 300 es                            \n" +
+                    "uniform mat4 uMVPMatrix;                   \n" +
+                    "layout (location = 0) in vec4 vPosition;   \n" +
+                    "void main() {                              \n" +
+                    "   gl_Position = uMVPMatrix * vPosition;   \n" +
+                    "}                                          \n";
+
+         */
+
 
     private final String fragmentShaderCode =
             "#version 300 es                            \n" +
@@ -24,13 +36,14 @@ public class Triangle {
                     "  fragColor = vColor;                      \n" +
                     "}                                          \n";
 
+    private int mMVPMatrixHandle;
     private FloatBuffer vertexBuffer;
 
     static final int COORDS_PER_VERTEX = 3; // x, y, z
-    static float triangleCoords[] = {       // 반시계 방향으로 좌표 설정.
-            0.0f,  0.622008459f, 0.0f,      // 상단
-            -0.5f, -0.311004243f, 0.0f,     // 좌측하단
-            0.5f, -0.311004243f, 0.0f       // 우측하단
+    static float triangleCoords[] = {
+            0.0f,  0.622008459f, 0.0f, // 상단 vertex
+            -0.5f, -0.311004243f, 0.0f, // 왼쪽 아래 vertex
+            0.5f, -0.311004243f, 0.0f  // 오른쪽 아래 vertex
     };
 
     // color 설정
@@ -84,8 +97,14 @@ public class Triangle {
         // 해당 핸들을 이용해 해당 uniform 변수에 값을 할당한다.
         GLES20.glUniform4fv(mColorHandle, 1, color, 0);
 
+        /*
+        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+         */
+
         // 위에서 설정한 값들을 바탕으로 렌더링을 수행한다.
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
+        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, vertexCount);
+        GLES20.glLineWidth(33);
 
         // 활성화된 Vertex Attribute Array를 비활성화한다.
         GLES20.glDisableVertexAttribArray(mPositionHandle);

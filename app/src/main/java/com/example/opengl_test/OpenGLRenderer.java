@@ -2,6 +2,7 @@ package com.example.opengl_test;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -9,7 +10,6 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL;
 import javax.microedition.khronos.opengles.GL10;
 
 public class OpenGLRenderer implements GLSurfaceView.Renderer {
@@ -64,15 +64,43 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         mTriangle = new Triangle();
     }
 
+    /*
+    private final float[] mMVPMatrix = new float[16];
+    private final float[] mProjectionMatrix = new float[16];
+    private final float[] mViewMatrix = new float[16];
+     */
+
+    /*
+    public volatile float mAngle;
+
+    public float getAngle() {
+        return mAngle;
+    }
+    public void setAngle(float angle) {
+        mAngle = angle;
+    }
+    */
+
     // GLSurfaceView가 다시 그려질 때마다 호출되는 메소드
     public void onDrawFrame(GL10 unused) {
         // 위에서 설정한 glClearcolor에서 설정한 값으로 color buffer 클리어
-        // glClear메소드를 사용하여 클리어할 수 있는 버퍼는 다음 3가지
-        // Color buffer (GL_COLOR_BUFFER_BIT)
-        // depth buffer (GL_DEPTH_BUFFER_BIT)
-        // stencil buffer (GL_STENCIL_BUFFER_BIT)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
+        /*
+        //카메라 위치 설정
+        Matrix.setLookAtM(mViewMatrix, 0,0,0,-3,0f,0f,0f,0f,30f,0f);
+
+        //Projection과 camera view의 값을 곱하여 mMVPMatrix 변수에 저장
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+         */
+        /*
+        float[] scratch = new float[16];
+        float[] mRotationMatrix = new float[16];
+
+        //회전 matrix 정의
+        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
+        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        */
         mTriangle.draw();
     }
 
@@ -84,25 +112,13 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // viewport rectangle의 왼쪽 아래를 (0,0)으로 지정하고
         // viewport의 width와 height를 지정합니다.
         GLES20.glViewport(0, 0, width, height);
+
+        /*
+        // GLSurfaceView의 너비, 높이 사이의 비율을 계산
+        float ratio = (float) width / height;
+        // Projection matrix 정의
+        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1,1,3,7);
+         */
+
     }
 }
-
-/*
-public class OpenGLRenderer implements GLSurfaceView.Renderer {
-
-    @Override
-    public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        GLES20.glClearColor(1f,0,0,1f);
-    }
-
-    @Override
-    public void onSurfaceChanged(GL10 gl10, int i, int i1) {
-
-    }
-
-    @Override
-    public void onDrawFrame(GL10 gl10) {
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-    }
-}
-*/
