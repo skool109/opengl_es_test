@@ -40,7 +40,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "보정후 데이터를 시각화합니다.", Toast.LENGTH_LONG).show(); // 출력문구
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class); // opengl 화면으로 전환
+                Intent intent = new Intent(getApplicationContext(), Main2Activity.class); // opengl 화면으로 전환
                 startActivity(intent);
             }
         });

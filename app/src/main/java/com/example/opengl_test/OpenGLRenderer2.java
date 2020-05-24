@@ -2,19 +2,16 @@ package com.example.opengl_test;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.util.Log;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class OpenGLRenderer implements GLSurfaceView.Renderer {
+public class OpenGLRenderer2 implements GLSurfaceView.Renderer{
 
-    private Triangle mTriangle; // 0512
+    private human mhuman; // 0512
 
     public static int loadShader(int type, String shaderCode) {
         // 빈 쉐이더를 생성하고 그 인덱스를 할당.
@@ -61,20 +58,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // red, green, blue, alpha 순 (0~1)
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        mTriangle = new Triangle();
-    }
-
-    private final float[] mMVPMatrix = new float[16];
-    private final float[] mProjectionMatrix = new float[16];
-    private final float[] mViewMatrix = new float[16];
-
-    public volatile float mAngle;
-
-    public float getAngle() {
-        return mAngle;
-    }
-    public void setAngle(float angle) {
-        mAngle = angle;
+        mhuman = new human();
     }
 
     // GLSurfaceView가 다시 그려질 때마다 호출되는 메소드
@@ -82,20 +66,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // 위에서 설정한 glClearcolor에서 설정한 값으로 color buffer 클리어
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
-        //카메라 위치 설정
-        Matrix.setLookAtM(mViewMatrix, 0,0,0,-3,0f,0f,0f,0f,30f,0f);
-
-        //Projection과 camera view의 값을 곱하여 mMVPMatrix 변수에 저장
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-
-        float[] scratch = new float[16];
-        float[] mRotationMatrix = new float[16];
-
-        //회전 matrix 정의
-        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-
-        mTriangle.draw(scratch);
+        mhuman.draw();
     }
 
     // GLSurfaceView 크기 변경, 디바이스 화면 방향 전환으로 geometry가 바뀔 때 호출되는 메소드
@@ -107,10 +78,6 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         // viewport의 width와 height를 지정합니다.
         GLES20.glViewport(0, 0, width, height);
 
-        // GLSurfaceView의 너비, 높이 사이의 비율을 계산
-        float ratio = (float) width / height;
-        // Projection matrix 정의
-        Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1,1,3,7);
-
     }
+
 }

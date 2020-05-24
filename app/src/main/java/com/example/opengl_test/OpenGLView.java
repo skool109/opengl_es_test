@@ -8,7 +8,7 @@ class OpenglView extends GLSurfaceView {
 
     private final OpenGLRenderer mRenderer;
 
-    public OpenglView(Context context){
+    public OpenglView(Context context) {
         super(context);
 
         // OpenGL ES 2.0 context 생성
@@ -23,7 +23,6 @@ class OpenglView extends GLSurfaceView {
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
-    /*
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
     private float mPreviousX;
     private float mPreviousY;
@@ -57,5 +56,4 @@ class OpenglView extends GLSurfaceView {
         mPreviousY = y;
         return true;
     }
-     */
 }
