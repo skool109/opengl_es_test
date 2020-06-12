@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 public class Triangle {
 
@@ -35,6 +36,9 @@ public class Triangle {
             0.5f, -0.311004243f, 0.0f  // 오른쪽 아래 vertex
     };
 
+
+
+
     // color 설정
     float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
 
@@ -42,6 +46,7 @@ public class Triangle {
 
     public Triangle() {
         // 좌표 배열의 수에 해당하는 만큼 버퍼를 할당
+
         ByteBuffer bb = ByteBuffer.allocateDirect(triangleCoords.length * 4);
 
         // 디바이스 하드웨어에서 사용하는 byte order를 사용.

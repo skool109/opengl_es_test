@@ -3,6 +3,8 @@ package com.example.opengl_test;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -58,7 +60,11 @@ public class OpenGLRenderer2 implements GLSurfaceView.Renderer{
         // red, green, blue, alpha 순 (0~1)
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        mhuman = new human();
+        try {
+            mhuman = new human();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // GLSurfaceView가 다시 그려질 때마다 호출되는 메소드

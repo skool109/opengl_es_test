@@ -1,12 +1,68 @@
 package com.example.opengl_test;
 
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.opengl.GLES20;
+import android.os.Build;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.opencsv.CSVReader;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class human {
+// csv 파일 읽을 때
+//class ReadCsv {
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public static void main(String[] args){
+//        //반환용 리스트
+//        List<List<String>> ret = new ArrayList<List<String>>();
+//        BufferedReader br = null;
+//
+//        try{
+//            br = Files.newBufferedReader(Paths.get("test.csv"));
+//            //Charset.forName("UTF-8");
+//            String line = "";
+//
+//            while((line = br.readLine()) != null){
+//                //CSV 1행을 저장하는 리스트
+//                List<String> tmpList = new ArrayList<String>();
+//                String array[] = line.split(",");
+//                //배열에서 리스트 반환
+//                tmpList = Arrays.asList(array);
+//                System.out.println(tmpList);
+//                ret.add(tmpList);
+//            }
+//        }catch(FileNotFoundException e){
+//            e.printStackTrace();
+//        }catch(IOException e){
+//            e.printStackTrace();
+//        }finally{
+//            try{
+//                if(br != null){
+//                    br.close();
+//                }
+//            }catch(IOException e){
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//}
+
+public class human{
 
     private final String vertexShaderCode =
             "#version 300 es                            \n" +
@@ -25,19 +81,58 @@ public class human {
 
     private FloatBuffer vertexBuffer;
     static final int COORDS_PER_VERTEX = 3; // x, y, z
-    static float humanCoords[] = {
-            -0.066401f/2,	1.393949f/2,	-0.503021f/2,	-0.120006f/2,	1.320214f/2,	-0.365971f/2,	0.065459f/2,	0.072163f/2,	-0.125363f/2,	-0.070888f/2,	0.936261f/2,	-0.245004f/2,	-0.047209f/2,	1.535351f/2,	-0.519255f/2,	0.135612f/2,	1.078532f/2,	-0.306298f/2,	-0.000819f/2,	1.577427f/2,	-0.376945f/2,	-0.16587f/2,	1.018801f/2,	-0.205747f/2,	0.034677f/2,	1.050965f/2,	-0.245848f/2,	0.052401f/2,	0.045432f/2,	-0.194183f/2,	0.023195f/2,	0.492076f/2,	-0.208718f/2,	-0.019507f/2,	0.954656f/2,	-0.457861f/2,	0.045104f/2,	1.364244f/2,	-0.40253f/2,	0.038786f/2,	0.678973f/2,	-0.257076f/2,	0.065351f/2,	0.252602f/2,	-0.157002f/2,	-0.045689f/2,	0.038324f/2,	-0.017196f/2,	0.113846f/2,	1.214315f/2,	-0.316705f/2,	-0.085058f/2,	1.080172f/2,	-0.233369f/2,	-0.05843f/2,	1.022239f/2,	-0.199346f/2,	-0.090091f/2,	0.069736f/2,	-0.61866f/2,	-0.272698f/2,	0.937662f/2,	-0.385341f/2,	-0.160581f/2,	1.249747f/2,	-0.593401f/2,	-0.183778f/2,	1.530805f/2,	-0.48384f/2,	-0.350027f/2,	1.044747f/2,	-0.519323f/2,	-0.189448f/2,	1.569434f/2,	-0.361967f/2,	-0.271697f/2,	1.155192f/2,	-0.240534f/2,	-0.323495f/2,	1.068098f/2,	-0.414076f/2,	-0.021457f/2,	0.052257f/2,	-0.603815f/2,	-0.145289f/2,	0.485886f/2,	-0.570478f/2,	-0.079798f/2,	0.959991f/2,	-0.496151f/2,	-0.266503f/2,	1.337483f/2,	-0.506233f/2,	-0.191248f/2,	0.684511f/2,	-0.553608f/2,	-0.119107f/2,	0.244812f/2,	-0.615281f/2,	-0.212192f/2,	0.033595f/2,	-0.537982f/2,	-0.329492f/2,	1.153766f/2,	-0.496786f/2,	-0.264729f/2,	1.141896f/2,	-0.34241f/2,	-0.292702f/2,	1.08652f/2,	-0.32646f/2,	-0.158132f/2,	1.179897f/2,	-0.307596f/2,	-0.040093f/2,	1.175988f/2,	-0.539558f/2,	-0.098054f/2,	1.552796f/2,	0.686255f/2,	0.448355f/2,	0.720703f/2,	2.524288f/2
 
-    };
+    /*
+
+    public ArrayList<Float> readDataFromCsv(String filePath) throws IOException {
+
+        CSVReader reader = new CSVReader(new FileReader(filePath)); // 1
+
+//        CSVReader reader = new CSVReader(new InputStreamReader(getAssets().open(filePath)));
+
+        String [] nextLine;
+        ArrayList<Float> humanCoords = new ArrayList<> ();
+        while ((nextLine = reader.readNext()) != null) {   // 2
+            for (int i = 0; i < nextLine.length; i++) {
+                System.out.println(i + " " + nextLine[i]);
+                humanCoords.add(Float.parseFloat(nextLine[i]));
+            }
+            System.out.println();
+        }
+        return humanCoords;
+    }
+
+     */
+
+//    static float humanCoords[] = {
+//            -0.066401f/2,	1.393949f/2,	-0.503021f/2,	-0.120006f/2,	1.320214f/2,	-0.365971f/2,	0.065459f/2,	0.072163f/2,	-0.125363f/2,	-0.070888f/2,	0.936261f/2,	-0.245004f/2,	-0.047209f/2,	1.535351f/2,	-0.519255f/2,	0.135612f/2,	1.078532f/2,	-0.306298f/2,	-0.000819f/2,	1.577427f/2,	-0.376945f/2,	-0.16587f/2,	1.018801f/2,	-0.205747f/2,	0.034677f/2,	1.050965f/2,	-0.245848f/2,	0.052401f/2,	0.045432f/2,	-0.194183f/2,	0.023195f/2,	0.492076f/2,	-0.208718f/2,	-0.019507f/2,	0.954656f/2,	-0.457861f/2,	0.045104f/2,	1.364244f/2,	-0.40253f/2,	0.038786f/2,	0.678973f/2,	-0.257076f/2,	0.065351f/2,	0.252602f/2,	-0.157002f/2,	-0.045689f/2,	0.038324f/2,	-0.017196f/2,	0.113846f/2,	1.214315f/2,	-0.316705f/2,	-0.085058f/2,	1.080172f/2,	-0.233369f/2,	-0.05843f/2,	1.022239f/2,	-0.199346f/2,	-0.090091f/2,	0.069736f/2,	-0.61866f/2,	-0.272698f/2,	0.937662f/2,	-0.385341f/2,	-0.160581f/2,	1.249747f/2,	-0.593401f/2,	-0.183778f/2,	1.530805f/2,	-0.48384f/2,	-0.350027f/2,	1.044747f/2,	-0.519323f/2,	-0.189448f/2,	1.569434f/2,	-0.361967f/2,	-0.271697f/2,	1.155192f/2,	-0.240534f/2,	-0.323495f/2,	1.068098f/2,	-0.414076f/2,	-0.021457f/2,	0.052257f/2,	-0.603815f/2,	-0.145289f/2,	0.485886f/2,	-0.570478f/2,	-0.079798f/2,	0.959991f/2,	-0.496151f/2,	-0.266503f/2,	1.337483f/2,	-0.506233f/2,	-0.191248f/2,	0.684511f/2,	-0.553608f/2,	-0.119107f/2,	0.244812f/2,	-0.615281f/2,	-0.212192f/2,	0.033595f/2,	-0.537982f/2,	-0.329492f/2,	1.153766f/2,	-0.496786f/2,	-0.264729f/2,	1.141896f/2,	-0.34241f/2,	-0.292702f/2,	1.08652f/2,	-0.32646f/2,	-0.158132f/2,	1.179897f/2,	-0.307596f/2,	-0.040093f/2,	1.175988f/2,	-0.539558f/2,	-0.098054f/2,	1.552796f/2,	0.686255f/2,	0.448355f/2,	0.720703f/2,	2.524288f/2
+//
+//    };
+//    try{
+//        float humanCoords[] = readDataFromCsv("test.csv");
+//    }
+//    catch (IOException e) {
+//
+//    }
 
     // color 설정
     float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
 
     private final int mProgram;
+    // csv 파일 읽기
+//    public ArrayList<Float> humanCoords = readDataFromCsv("test.csv");
 
-    public human() {
+    public static ArrayList<Float> humanCoords = new ArrayList<>();
+
+    public human() throws IOException{
+
         // 좌표 배열의 수에 해당하는 만큼 버퍼를 할당
-        ByteBuffer bb = ByteBuffer.allocateDirect(humanCoords.length * 4);
+//        ReadCSVData readCSV = new ReadCSVData("test.csv");
+//        humanCoords = readCSV.humanCoords;
+
+
+        ByteBuffer bb = ByteBuffer.allocateDirect(humanCoords.size() * 4);
+//        ByteBuffer bb = ByteBuffer.allocateDirect(humanCoords.length * 4);
 
         // 디바이스 하드웨어에서 사용하는 byte order를 사용.
         bb.order(ByteOrder.nativeOrder());
@@ -45,7 +140,13 @@ public class human {
         // ByteBuffer를 통해 floating point 버퍼를 생성.
         vertexBuffer = bb.asFloatBuffer();
         // 이 FloatBuffer에 좌표를 추가.
-        vertexBuffer.put(humanCoords);
+
+        // vertexBuffer에 float값 인풋 - 초기화 필요!
+        for(Float hm : humanCoords){
+            vertexBuffer.put(hm);
+        }
+//        vertexBuffer.put(humanCoords);
+
         // 버퍼 상의 첫 번째 좌표를 읽을 수 있도록 설정.
         vertexBuffer.position(0);
 
@@ -63,7 +164,8 @@ public class human {
     private int mPositionHandle;
     private int mColorHandle;
 
-    private final int vertexCount = humanCoords.length / COORDS_PER_VERTEX;
+    //    private final int vertexCount = humanCoords.length / COORDS_PER_VERTEX;
+    private final int vertexCount = humanCoords.size() / COORDS_PER_VERTEX;
     private final int vertexStride = COORDS_PER_VERTEX * 4;
 
     public void draw() {
@@ -89,4 +191,3 @@ public class human {
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
 }
-
